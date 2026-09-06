@@ -1,0 +1,56 @@
+{
+  "farm_id": "FARM001",
+  "species": "shrimp",
+  "production_stage": "grow-out",
+  "location": "Coastal aquaculture farm, Andhra Pradesh, India",
+
+  "water_quality": {
+    "observation_time": "2026-09-02T08:00:00+05:30",
+
+    "dissolved_oxygen": {
+      "value": 4.2,
+      "unit": "mg/L",
+      "reference_range": {
+        "min": 5.0,
+        "max": 7.0,
+        "unit": "mg/L",
+        "basis": "farm operating plan"
+      }
+    },
+
+    "ph": {
+      "value": 7.8,
+      "unit": "pH"
+    },
+
+    "temperature": {
+      "value": 30,
+      "unit": "C"
+    },
+
+    "salinity": {
+      "value": 20,
+      "unit": "ppt"
+    }
+  },
+
+  "weather": {
+    "observation_time": "2026-09-02T08:00:00+05:30",
+    "forecast_horizon": "next 24 hours",
+    "source": "demo scenario",
+    "conditions": "Heavy rainfall expected within the next 24 hours."
+  },
+
+  "market": {
+    "observation_time": "2026-09-02",
+    "product": "shrimp",
+    "market_location": "Supplied local market",
+    "current_price": {
+      "value": 420,
+      "currency": "INR",
+      "unit": "kg"
+    },
+    "trend": "Stable this week",
+    "source": "demo scenario"
+  }
+}
