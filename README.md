@@ -260,3 +260,7 @@ The command requires a valid existing Gemini key (`GOOGLE_API_KEY` or the
 supported `GEMINI_API_KEY` alias) but does not require a Gnani key. The response
 should be in Telugu and should identify that water measurements are missing
 rather than inventing them.
+
+## One-Page Solution Pitch
+[View the AquaVoice Solution Pitch](docs/AquaVoice_One_Page_Solution_Pitch.pdf)
+
