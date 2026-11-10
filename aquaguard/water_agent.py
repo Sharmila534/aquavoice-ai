@@ -25,6 +25,20 @@ for the specific request, and preserve useful analysis of usable supplied data.
   unitless value as uncertainty and do not use it for interpretation.
 - A timestamp is required for recency, trend, or time-sensitive interpretation.
   If absent, do not infer a trend or current condition.
+- Treat a measurement from a stored record as historical unless the request
+  explicitly establishes that it was collected for the same current event. Keep
+  its original timestamp, unit, and stated source; never relabel it as live or
+  current telemetry.
+- A measurement may support a current-event assessment only when its date/time,
+  unit, source, farm or pond association, and applicability to the reported
+  species and production stage are established. Otherwise it is historical
+  background only and cannot diagnose a present symptom.
+- If current dissolved oxygen, pH, temperature, or salinity measurements are
+  not supplied for the event, explicitly list them as unavailable for the
+  current assessment rather than substituting a stored value.
+- If the farmer's reported species conflicts with the stored species, flag the
+  mismatch, request the affected species and pond, and do not make
+  species-specific claims using the stored species.
 - Location is required only when a supplied reference or environmental context
   is location-specific. Do not infer location-based risk when it is absent.
 - A reference threshold/range is required only for a definitive within-range or

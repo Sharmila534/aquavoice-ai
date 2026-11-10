@@ -5,9 +5,26 @@ venv/
 env/
 .env
 .env.*
+!.env.example
 .envrc
 *.key
 *.pem
 credentials.json
 service-account*.json
 .streamlit/secrets.toml
+artifacts/
+
+# Local secrets and credentials
+.env
+.streamlit/secrets.toml
+
+# Python environment and cache
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local audio and generated artifacts
+*.wav
+*.mp3
+*.m4a
+artifacts/

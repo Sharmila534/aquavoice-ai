@@ -173,3 +173,90 @@ Future MCP controls:
 - Restrict each tool to allow-listed datasets, tables, views, and query patterns appropriate to its domain.
 - Preserve an audit trail for every evidence-backed response: consulted domain, data source/dataset, query or tool identity, observation time when available, and the specialist that supplied the evidence.
 - Keep Water, Weather, and Market evidence distinct in root synthesis. Cross-domain access should be exceptional, justified, documented, and minimized.
+
+## Gnani Prisma V3.0 speech-to-text (local backend preparation)
+
+Gnani speech-to-text is prepared as a small backend service in `gnani_stt.py`.
+It does not change Streamlit, Firebase, Firestore, or the Gemini/ADK agent
+workflow. It sends only the documented Gnani request fields:
+
+- `audio_file` (multipart file)
+- `language_code`
+- `model=prisma-v3.0`
+- `format=transcribe`
+
+The service accepts `indic-auto`, `te-IN`, `hi-IN`, `ta-IN`, `kn-IN`, `bn-IN`,
+and `ml-IN`, plus WAV, MP3, OGG, FLAC, AAC, and M4A files. It rejects audio
+longer than 30 seconds. For non-WAV audio, provide the known duration explicitly
+because the backend deliberately does not guess compressed-audio duration.
+
+### Local secret configuration
+
+Enter secrets yourself in [`.env`](.env) at the project root:
+
+```text
+C:\Users\saish\Desktop\AquaGuard\.env
+```
+
+Required Gnani variable:
+
+```text
+GNANI_API_KEY=YOUR_GNANI_AQUAVOICE_PROTOTYPE_KEY
+```
+
+Existing AquaGuard Gemini compatibility remains on `GOOGLE_API_KEY`. You may
+optionally set `GEMINI_API_KEY`; AquaGuard maps it to `GOOGLE_API_KEY` only when
+the existing variable is absent. Do not put keys in code, Streamlit UI files, or
+source-controlled files.
+
+Install the declared dependencies after pulling these changes:
+
+```powershell
+Set-Location "C:\Users\saish\Desktop\AquaGuard"
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+### Safe local request test
+
+This command makes a real API request only after you add your own `GNANI_API_KEY`
+to `.env`. Use a non-sensitive supported audio file that is no more than 30
+seconds long. The client returns Gnani's raw JSON because AquaGuard does not
+assume an undocumented response field such as `transcript`.
+
+```powershell
+python -c "from gnani_stt import transcribe_audio; import json; print(json.dumps(transcribe_audio(r'C:\path\to\short-audio.wav', language_code='indic-auto'), indent=2))"
+```
+
+For MP3, OGG, FLAC, AAC, or M4A, supply the verified duration:
+
+```powershell
+python -c "from gnani_stt import transcribe_audio; import json; print(json.dumps(transcribe_audio(r'C:\path\to\short-audio.mp3', language_code='te-IN', duration_seconds=12.5), indent=2))"
+```
+
+Do not treat the integration as verified until this command receives a successful
+response using your own API key and a valid audio sample.
+
+## AquaVoice transcript-to-reasoning bridge
+
+`aquavoice.py` prepares the next stage after Gnani provides a real transcript
+and a concrete detected language. It does not call Gnani, simulate a transcript,
+or replace the existing Gemini/ADK root agent. Instead it passes the transcript
+to the existing `ask_aquaguard()` workflow with an instruction to return a
+farmer-facing answer in the detected language.
+
+### Manual transcript reasoning test (not live Gnani transcription)
+
+This test validates Gemini reasoning only. It does not prove that Gnani STT is
+working and it does not use mock transcription in the running application.
+
+```powershell
+Set-Location "C:\Users\saish\Desktop\AquaGuard"
+.\.venv\Scripts\Activate.ps1
+python -c "import asyncio; from aquavoice import respond_to_transcript; answer, _ = asyncio.run(respond_to_transcript('నా చెరువులో నీటి నాణ్యత ఎలా ఉంది?', 'te-IN', {'farm_id': 'LOCAL_TEST'})); print(answer)"
+```
+
+The command requires a valid existing Gemini key (`GOOGLE_API_KEY` or the
+supported `GEMINI_API_KEY` alias) but does not require a Gnani key. The response
+should be in Telugu and should identify that water measurements are missing
+rather than inventing them.
